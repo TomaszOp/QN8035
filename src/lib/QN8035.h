@@ -61,6 +61,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		int SclPin;
 		void AttachI2CPins(int _sdaPin, int _sclPin);
 		void SetAddressI2C(byte _address);
+		void AttachPWMPin(int _pwmPin);
 
 		void Init();
 
@@ -115,6 +116,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		void InitRDS();
 
 		void StartPWMCrystal(int _Pin);
+		void StartPWMCrystal();
 		void StopPWMCrystal();
 
 		void TunerTest();

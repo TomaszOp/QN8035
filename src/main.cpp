@@ -3,6 +3,7 @@
 
 #define SdaPin 9
 #define SclPin 8
+#define PWMPin 7
 #define i2C_ADDRESS 0x10
 
 QN8035 qn8035;
@@ -36,12 +37,24 @@ void setup()
     Serial.begin(115200);
     while (!Serial);
 
+    /*
+    configure pins
+    */
     qn8035.AttachI2CPins(SdaPin, SclPin);
+    qn8035.AttachPWMPin(PWMPin);
+
+    /*
+    address i2c
+    */
     qn8035.SetAddressI2C(i2C_ADDRESS);
 
+    /*
+    on debug message on uart
+    */
     qn8035.i2c.debugSerial = true;
 
 
+    // testing
     /*
     int pwmChannel = 0; // Selects channel 0
     int frequence = 32768; // PWM frequency of 1 KHz
@@ -68,7 +81,7 @@ void setup()
 
     //qn8035.TunerInit();
 
-    qn8035.StartPWMCrystal(7);
+    qn8035.StartPWMCrystal();
 }
 
 void loop() {
@@ -85,24 +98,24 @@ void loop() {
       case ']':
         qn8035.StopPWMCrystal();
         qn8035.SetFrequencyMHz(qn8035.FrequencyMHz + 0.05);
-        qn8035.StartPWMCrystal(7);
+        qn8035.StartPWMCrystal();
         break;
       case '[':
         qn8035.StopPWMCrystal();
         qn8035.SetFrequencyMHz(qn8035.FrequencyMHz - 0.05);
-        qn8035.StartPWMCrystal(7);
+        qn8035.StartPWMCrystal();
         break;
       
       case '+':
         qn8035.StopPWMCrystal();
         qn8035.SetVolume(qn8035.Volume + 1);
-        qn8035.StartPWMCrystal(7);
+        qn8035.StartPWMCrystal();
         break;
 
       case '-':
         qn8035.StopPWMCrystal();
         qn8035.SetVolume(qn8035.Volume - 1);
-        qn8035.StartPWMCrystal(7);
+        qn8035.StartPWMCrystal();
         break;
 
       case '?':
@@ -118,13 +131,13 @@ void loop() {
         qn8035.StopPWMCrystal();
         Serial.print("Frequency: ");
         Serial.println(qn8035.GetFrequency());
-        qn8035.StartPWMCrystal(7);
+        qn8035.StartPWMCrystal();
         break;
 
       case 'r':
         qn8035.StopPWMCrystal();
         GetChipInfo();
-        qn8035.StartPWMCrystal(7);
+        qn8035.StartPWMCrystal();
         break;
 
       default:
