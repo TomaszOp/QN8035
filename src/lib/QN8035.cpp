@@ -41,7 +41,7 @@ QN8035::~QN8035()
 void QN8035::PrintLog(const char * log)
 {
 	if(debugSerial)
-	Serial.println(log);
+		Logger.PrintLnLog(log);
 }
 
 void QN8035::AttachI2CPins(int _sdaPin, int _sclPin)

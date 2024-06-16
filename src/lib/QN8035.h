@@ -57,6 +57,9 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		
         bool debugSerial;
 
+		/*
+		conffigure output
+		*/
 		int SdaPin;
 		int SclPin;
 		void AttachI2CPins(int _sdaPin, int _sclPin);
@@ -65,6 +68,9 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 
 		void Init();
 
+		/*
+		chip registeres
+		*/
 		REG_SYSTEM1 system1;
 		REG_CCA cca;
 		REG_SNR snr;
@@ -91,10 +97,20 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		REG_XTAL_DIV2 xtadiv2;
 		REG_INT_CTRL int_ctrl;
 
+		/*
+		module i2C communications
+		*/
 		I2C i2c;
 
+		/*
+		virtual quatrz
+		*/
 		PWM_CRYSTAL pwmCrystal;
 
+
+		/*
+		chip QN8035 method for users
+		*/
 		void TunerInit();
 		uint8_t TunerShutdown();
 
@@ -116,6 +132,18 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 
 		void InitRDS();
 
+
+		/*
+		currently set parameters
+		*/
+		float FrequencyMHz;
+		uint8_t Volume;
+		bool Mute;
+
+
+		/*
+		only for testing
+		*/
 		void StartPWMCrystal(int _Pin);
 		void StartPWMCrystal();
 		void StopPWMCrystal();
@@ -123,18 +151,16 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		void TunerTest();
 		void TunerTest2();
 
-		float FrequencyMHz;
-		uint8_t Volume;
-		bool Mute;
+
 
 		private: 
 
 		byte addressI2C;
-
 		LoggerUart Logger;
 
-
-
+		/*
+		only for testing, send data to i2c without registerr class
+		*/
 		void WriteRegister(uint8_t registerNr, uint8_t _data);
         uint8_t ReadRegister(uint8_t registerNr);
 
