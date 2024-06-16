@@ -57,6 +57,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		
         bool debugSerial;
 
+
 		/*
 		conffigure output
 		*/
