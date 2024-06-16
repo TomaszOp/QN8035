@@ -106,6 +106,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		void SetVolume(uint8_t vale);
 		uint16_t GetVolume(void);
 		uint16_t SetVolume(VolumeDirection direction);
+		void SetMute(bool value);
 
 		int16_t GetSnr();
 		int16_t GetRssi();
@@ -124,6 +125,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 
 		float FrequencyMHz;
 		uint8_t Volume;
+		bool Mute;
 
 		private: 
 

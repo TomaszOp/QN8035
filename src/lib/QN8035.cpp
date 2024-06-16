@@ -273,6 +273,18 @@ void QN8035::SetVolume(uint8_t level)
 	vol_ctl.Write();
 }
 
+void QN8035::SetMute(bool value)
+{
+	Logger.PrintLog("Mute ");
+	Logger.PrintLnLog((value ? (uint8_t)1 : (uint8_t)0));
+
+	this->Mute = value;
+
+	vol_ctl.SetMUTE_EN((value ? (uint8_t)1 : (uint8_t)0));
+	vol_ctl.Write();
+}
+
+
 void QN8035::TunerTest()
 {
 	/*
