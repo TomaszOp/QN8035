@@ -130,10 +130,10 @@ void loop() {
 
 
       case 'i':
-        qn8035.StopPWMCrystal();
+        //qn8035.StopPWMCrystal();
         Serial.print("Frequency: ");
         Serial.println(qn8035.GetFrequency());
-        qn8035.StartPWMCrystal();
+        //qn8035.StartPWMCrystal();
         break;
 
       case 'r':
