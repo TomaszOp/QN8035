@@ -49,6 +49,11 @@ void QN8035::AttachI2CPins(int _sdaPin, int _sclPin)
 	i2c.AttachI2CPins(_sdaPin,_sclPin);      
 }
 	
+void QN8035::AttachPWMPin(int _pwmPin)
+{
+	pwmCrystal.AttachPWMPin(_pwmPin);
+}
+
 void QN8035::SetAddressI2C(byte _address)
 {
 	i2c.SetAddressI2C(_address);
@@ -347,6 +352,11 @@ void QN8035::TunerTest2()
 void QN8035::StartPWMCrystal(int _Pin)
 {
 	this->pwmCrystal.AttachPWMPin(_Pin);
+	this->pwmCrystal.Start();
+}
+
+void QN8035::StartPWMCrystal()
+{
 	this->pwmCrystal.Start();
 }
 
