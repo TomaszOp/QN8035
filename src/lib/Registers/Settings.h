@@ -75,6 +75,8 @@ enum STATUS1__ST_MO_RX
 
 #define REG_VOL_CTL_MAX_ANALOG_GAIN 0x07
 #define REG_VOL_CTL_MIN_ANALOG_GAIN 0x00
+#define REG_VOL_CTL_START_ANALOG_GAIN 0x03
+
 
 typedef enum 
 {

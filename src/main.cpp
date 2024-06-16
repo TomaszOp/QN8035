@@ -73,13 +73,17 @@ void setup()
 
     delay(1000);
     GetChipInfo();
-    qn8035.TunerInit();
-  
+
+    //pinMode(SdaPin, PULLUP);
+    //pinMode(SclPin, PULLUP);
+
 
     //qn8035.TunerTest();
-    qn8035.TunerTest2();
+    //qn8035.TunerTest2();
 
-    //qn8035.TunerInit();
+    qn8035.TunerInit();
+
+    qn8035.SetVolume(3);
 
     qn8035.StartPWMCrystal();
 }

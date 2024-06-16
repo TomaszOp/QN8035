@@ -138,6 +138,8 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		currently set parameters
 		*/
 		float FrequencyMHz;
+		uint16_t FrequencyCurrent;
+
 		uint8_t Volume;
 		bool Mute;
 
@@ -164,6 +166,9 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		*/
 		void WriteRegister(uint8_t registerNr, uint8_t _data);
         uint8_t ReadRegister(uint8_t registerNr);
+
+		uint8_t ScanUp();
+		void CheckScanComplete();
 
 
 		void PrintLog(const char * log);
