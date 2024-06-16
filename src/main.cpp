@@ -77,7 +77,6 @@ void setup()
     //pinMode(SdaPin, PULLUP);
     //pinMode(SclPin, PULLUP);
 
-
     //qn8035.TunerTest();
     //qn8035.TunerTest2();
 
@@ -92,7 +91,6 @@ void loop() {
 
   delay(30);  
 
-  
   if (Serial.available() > 0)
   {
     char key = Serial.read();
