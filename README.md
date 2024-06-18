@@ -10,6 +10,8 @@ work:<br>
  GetFrequency<br>
  SetVolume<br>
  SetMute<br>
+ GetSnr<br>
+	GetRssi<br>
  <br>
  <br>
 All registers (and setting fields) are finished <br>
