@@ -14,7 +14,7 @@
 	}
 
 
-	uint8_t REG_CCA::SetXTAL_INJ(uint8_t value)
+	void REG_CCA::SetXTAL_INJ(uint8_t value)
 	{
 		this->Data = (this->Data & 0b01111111) | (value << 7);
 	}

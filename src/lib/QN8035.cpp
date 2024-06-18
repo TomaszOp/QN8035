@@ -193,7 +193,7 @@ void QN8035::SetFrequencyMHz(float frequency)
 }
 
 
-float QN8035::GetFrequency()
+float QN8035::GetFrequencyMHz()
 {	
 	ch.Read();
 	uint8_t Lo = ch.GetCH();

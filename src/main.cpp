@@ -173,7 +173,7 @@ void loop()
       case 'i':
         //qn8035.StopPWMCrystal();
         Serial.print("Frequency: ");
-        Serial.println(qn8035.GetFrequency());
+        Serial.println(qn8035.GetFrequencyMHz());
         //qn8035.StartPWMCrystal();
         break;
 

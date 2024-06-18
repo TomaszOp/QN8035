@@ -116,7 +116,8 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 
 		void SetFrequency(uint16_t frequency);
 		void SetFrequencyMHz(float frequency);
-		float GetFrequency();
+		float GetFrequencyMHz();
+		
 		uint8_t Scan(ScanDirection direction);
 
 		void SetVolume(uint8_t vale);
