@@ -5,10 +5,11 @@ Compile platformio (framework = arduino)<br>
 <br>
 not everything is finished<br>
 work:<br>
- initialize chip<br>
+ Initialize chip<br>
  SetFrequency<br>
  GetFrequency<br>
  SetVolume<br>
+ SetMute<br>
  <br>
  <br>
 All registers (and setting fields) are finished <br>
