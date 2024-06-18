@@ -10,8 +10,9 @@ work:<br>
  GetFrequency<br>
  SetVolume<br>
  <br>
-All registers (setting fields) is finished
-I didn't have a quartz, I made a virtual quartz using PWM, // add resistor 10k PWMPin and XCLK
+ <br>
+All registers (and setting fields) are finished <br>
+I didn't have a quartz, i made a virtual quartz using PWM (add resistor 10k to PWMPin and XCLK)
 
  
   
