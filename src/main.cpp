@@ -86,7 +86,7 @@ void setup()
     on debug message on uart
     */
     qn8035.i2c.debugSerial = true;
-
+    qn8035.debugSerial = true;
 
     // testing
     /*
@@ -132,25 +132,29 @@ void loop() {
     switch (key)
     {
       case ']':
-        qn8035.StopPWMCrystal();
+        //qn8035.StopPWMCrystal();
         qn8035.SetFrequencyMHz(qn8035.FrequencyMHz + 0.05);
-        qn8035.StartPWMCrystal();
+        //qn8035.StartPWMCrystal();
         break;
       case '[':
-        qn8035.StopPWMCrystal();
+        //qn8035.StopPWMCrystal();
         qn8035.SetFrequencyMHz(qn8035.FrequencyMHz - 0.05);
-        qn8035.StartPWMCrystal();
+        //qn8035.StartPWMCrystal();
         break;
       
       case '+':
         //qn8035.StopPWMCrystal();
         qn8035.SetVolume(qn8035.Volume + 1);
+        Serial.print("Volume: ");
+        Serial.println(qn8035.Volume);
         //qn8035.StartPWMCrystal();
         break;
 
       case '-':
         //qn8035.StopPWMCrystal();
         qn8035.SetVolume(qn8035.Volume - 1);
+        Serial.print("Volume: ");
+        Serial.println(qn8035.Volume);
         //qn8035.StartPWMCrystal();
         break;
 
@@ -160,6 +164,8 @@ void loop() {
         Serial.println(" + Volume up");
         Serial.println(" - Volume down");
         Serial.println(" i Get frequency");
+        Serial.println(" r Chip info");
+        Serial.println(" m Set mute");
         break;
 
 
@@ -171,9 +177,15 @@ void loop() {
         break;
 
       case 'r':
-        qn8035.StopPWMCrystal();
+        //qn8035.StopPWMCrystal();
         GetChipInfo();
-        qn8035.StartPWMCrystal();
+        //qn8035.StartPWMCrystal();
+        break;
+
+      case 'm':
+        qn8035.SetMute((qn8035.Mute ? false : true));
+        Serial.print("Mute: ");
+        Serial.println(qn8035.Mute ? 1 : 0);
         break;
 
 
