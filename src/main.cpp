@@ -3,10 +3,44 @@
 
 #define SdaPin 9
 #define SclPin 8
+// add resistor 10k PWMPin and XCLK
 #define PWMPin 7
 #define i2C_ADDRESS 0x10
 
 QN8035 qn8035;
+
+void scanI2C() {
+  byte error, address;
+  int nDevices;
+  Serial.println("Scanning...");
+  nDevices = 0;
+  for(address = 1; address < 127; address++ ) {
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+    if (error == 0) {
+      Serial.print("I2C device found at address 0x");
+      if (address<16) {
+        Serial.print("0");
+      }
+      Serial.println(address,HEX);
+      nDevices++;
+    }
+    else if (error==4) {
+      Serial.print("Unknow error at address 0x");
+      if (address<16) {
+        Serial.print("0");
+      }
+      Serial.println(address,HEX);
+    }    
+  }
+  if (nDevices == 0) {
+    Serial.println("No I2C devices found\n");
+  }
+  else {
+    Serial.println("done\n");
+  }
+  delay(5000);          
+}
 
 
 void GetChipInfo()
@@ -109,15 +143,15 @@ void loop() {
         break;
       
       case '+':
-        qn8035.StopPWMCrystal();
+        //qn8035.StopPWMCrystal();
         qn8035.SetVolume(qn8035.Volume + 1);
-        qn8035.StartPWMCrystal();
+        //qn8035.StartPWMCrystal();
         break;
 
       case '-':
-        qn8035.StopPWMCrystal();
+        //qn8035.StopPWMCrystal();
         qn8035.SetVolume(qn8035.Volume - 1);
-        qn8035.StartPWMCrystal();
+        //qn8035.StartPWMCrystal();
         break;
 
       case '?':
@@ -140,6 +174,11 @@ void loop() {
         qn8035.StopPWMCrystal();
         GetChipInfo();
         qn8035.StartPWMCrystal();
+        break;
+
+
+      case 's':
+        scanI2C();
         break;
 
       default:

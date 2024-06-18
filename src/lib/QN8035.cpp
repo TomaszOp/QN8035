@@ -156,6 +156,34 @@ void QN8035::TunerInit()
 
 	SetVolume(REG_VOL_CTL_START_ANALOG_GAIN);
 	delay(I2C_DELAY);
+
+	//this->i2c.WriteRegister(1, 128);
+
+	// clocl wave digital clock
+	cca.SetXTAL_INJ(1);
+
+//crystal clock is 32768HZ
+//#define QND_XTAL_DIV0                   0x01
+//#define QND_XTAL_DIV1                   0x08
+//#define QND_XTAL_DIV2                   0x5C
+
+//crystal clock is 12MHZ
+//#define QND_XTAL_DIV0                               0x6e
+//#define QND_XTAL_DIV1                               0x01
+//#define QND_XTAL_DIV2                               0x54
+
+
+//crystal clock is 4MHZ
+#define QND_XTAL_DIV0                               0x7a
+#define QND_XTAL_DIV1                               0x00
+#define QND_XTAL_DIV2                               0x54
+
+//	this->i2c.WriteRegister(XTAL_DIV0, QND_XTAL_DIV0);
+//	this->i2c.WriteRegister(XTAL_DIV1, QND_XTAL_DIV1);
+//	this->i2c.WriteRegister(XTAL_DIV2, QND_XTAL_DIV2);
+
+
+
 }
 
 
@@ -186,7 +214,7 @@ void QN8035::SetFrequency(uint16_t frequency)
 
 	system1.SetCCA_CH_DIS(1);
 	system1.SetRXREQ(1);
-	system1.SetRDSEN(1);
+	system1.SetRDSEN(0);
 	system1.SetSWRST(0);	
 	system1.SetRECAL(0);
 

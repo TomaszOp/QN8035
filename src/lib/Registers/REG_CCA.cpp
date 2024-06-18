@@ -14,9 +14,9 @@
 	}
 
 
-	uint8_t REG_CCA::GetXTAL_INJ()
+	uint8_t REG_CCA::SetXTAL_INJ(uint8_t value)
 	{
-		return (this->Data >> 7) & 0b00000001;
+		this->Data = (this->Data & 0b01111111) | (value << 7);
 	}
 
 	void REG_CCA::SetImr(uint8_t value)

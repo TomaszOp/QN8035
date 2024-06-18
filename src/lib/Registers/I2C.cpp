@@ -22,6 +22,8 @@
 		this->SclPin = _sclPin;      
 
 		Wire.begin(this->SdaPin, this->SclPin);
+		Wire.setClock(400000);
+		Wire.setTimeOut(50000);
 	}
 	
 	void I2C::SetAddressI2C(byte _address)
@@ -49,12 +51,16 @@
 		PrintLog(_data);
 
 		Wire.beginTransmission(this->addressI2C);
+
+		//delay(I2C_DELAY);
+		//Wire.write(20);
+
 		delay(I2C_DELAY);
 		Wire.write(registerNr);
 		delay(I2C_DELAY);
 		Wire.write(_data);
 		delay(I2C_DELAY);
-		Wire.endTransmission();
+		Wire.endTransmission(true);
 
 		delay(I2C_DELAY);
 	}
@@ -64,7 +70,7 @@
 	{
 		PrintLog("ReadRegister");
 		PrintLog(registerNr);
-		PrintLog(this->addressI2C);
+		//PrintLog(this->addressI2C);
 
 		Wire.beginTransmission(this->addressI2C);
 		Wire.write(registerNr);
@@ -72,7 +78,8 @@
 
 		delay(I2C_DELAY);
 		PrintLog("requestFrom");
-		Wire.requestFrom((int)this->addressI2C, (int)1);
+        
+		Wire.requestFrom(this->addressI2C, (int)1);
 		
 		delay(I2C_DELAY);
 
@@ -81,12 +88,10 @@
 		if (Wire.available())
 		{
 			data = Wire.read();
-			PrintLog("Wire.read");
-
-			PrintLog("Read data");
+			PrintLog("Wire.read ");
 			PrintLog(data);
 
-			//Wire.endTransmission(true);
+			Wire.endTransmission(true);
 		}
 
 		delay(I2C_DELAY);

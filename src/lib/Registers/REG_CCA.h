@@ -31,7 +31,7 @@
 		Symbol XTAL_INJ 
 		Default 01
 		*/
-		uint8_t GetXTAL_INJ();
+		uint8_t SetXTAL_INJ(uint8_t value);
 
 		/*
 		Image Rejection. In CCA disabled mode (CCA_DIS=1), this is user set value. In
