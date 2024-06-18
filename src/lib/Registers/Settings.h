@@ -29,7 +29,59 @@
 #define XTAL_DIV2 0x17 //Frequency select of reference clock source
 #define INT_CTRL 0x18 //RDS control
 
-	
+
+
+enum SYSTEM1__SWRST
+{
+    SWRST__Keep = 0, 
+    SWRST__Reset  = 1,
+};
+
+enum SYSTEM1__RECAL
+{
+    RECAL__NoReset = 0, 
+    RECAL__Reset  = 1,
+};
+
+enum SYSTEM1__STNBY 
+{
+    STNBY__NoStandby = 0, 
+    STNBY__Standby  = 1,
+};
+
+enum SYSTEM1__RXREQ 
+{
+    RXREQ__IdleMode = 0, 
+    RXREQ__ReceiveMode  = 1,
+};
+
+enum SYSTEM1__RDSEN 
+{
+    RDSEN__NoRDS = 0, 
+    RDSEN__RDSEnable  = 1,
+};
+
+enum SYSTEM1__FORCE_MO  
+{
+    FORCE_MO__Auto = 0, 
+    FORCE_MO__Mono  = 1,
+};
+
+enum SYSTEM1__CHSC  
+{
+    CHSC__NormalOperation = 0, 
+    CHSC__ChannelScanmode  = 1,
+};
+
+enum SYSTEM1__CCA_CH_DIS 
+{
+    CCA_CH_DIS__CCA = 0, 
+    CCA_CH_DIS__CH  = 1,
+};
+
+
+
+
 
 enum STATUS1__FSM 
 {
@@ -73,6 +125,14 @@ enum CCA__XTAL_INJ
     SineWaveClock = 0, 
     SquareWaveClock = 1
 };
+
+enum CCA__XTAL_IMR
+{
+    IMR__LO_Smaller_RF = 0, 
+    IMR__LO_Bigger_RF = 1
+};
+
+
 
 
 #define INIT_FREQ    95.3

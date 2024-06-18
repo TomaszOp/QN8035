@@ -46,7 +46,7 @@
 /*
 DEFAULT_SdaPin pin SDA
 DEFAULT_SclPin pin SCL
-DEFAULT_PWMPin pin Quatz if not exist real quartz
+DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin and XCLK
 */
 	class QN8035
 	{
@@ -55,7 +55,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		QN8035();
 		~QN8035();
 		
-        bool debugSerial;
+        bool debug;
 
 
 		/*
@@ -69,7 +69,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 
 
 		/*
-		chip registeres
+		chip registers
 		*/
 		REG_SYSTEM1 system1;
 		REG_CCA cca;
@@ -103,7 +103,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		I2C i2c;
 
 		/*
-		virtual quatrz
+		virtual quartz
 		*/
 		PWM_CRYSTAL pwmCrystal;
 
@@ -128,8 +128,8 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		void SetWaveClockType(CCA__XTAL_INJ value);
 
 
-		int16_t GetSnr();
-		int16_t GetRssi();
+		int8_t GetSnr();
+		int8_t GetRssi();
 
 		void ScanFrequencyDown();
 		void ScanFrequencyUp();
@@ -172,9 +172,6 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 
 		uint8_t ScanUp();
 		void CheckScanComplete();
-
-
-		void PrintLog(const char * log);
 	}; 
 
 #endif

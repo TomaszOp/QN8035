@@ -4,7 +4,7 @@
 
 	REGISTER::REGISTER()
 	{
-		debugSerial = true;
+		debugSerial = false;
 	}
 
 	REGISTER::REGISTER(I2C *_i2c)

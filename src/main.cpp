@@ -85,22 +85,22 @@ void setup()
     /*
     on debug message on uart
     */
-    qn8035.i2c.debugSerial = true;
-    qn8035.debugSerial = true;
+    qn8035.i2c.debugSerial = false;
+    qn8035.debug = false;
 
     // testing
     /*
     int pwmChannel = 0; // Selects channel 0
-    int frequence = 32768; // PWM frequency of 1 KHz
-    int resolution = 2; // 8-bit resolution, 256 possible values
+    int frequence = 32768; // PWM frequency of  KHz
+    int resolution = 2; // bit resolution, possible values
     int pwmPin = 7;
     ledcSetup(pwmChannel, frequence, resolution);
 
-    // Assigns the PWM channel to pin 23
+    // Assigns the PWM channel to pin 
     ledcAttachPin(pwmPin, pwmChannel);
 
-    // Create the selected output voltage
-    ledcWrite(pwmChannel, 1); // 1.65 V
+    // Create the selected output 
+    ledcWrite(pwmChannel, 1); 
     */
 
     //qn8035.StartPWMCrystal(7);
@@ -166,7 +166,7 @@ void loop()
         Serial.println(" i Get frequency");
         Serial.println(" r Chip info");
         Serial.println(" m Set mute");
-        Serial.println(" m Scan i2c");
+        Serial.println(" s Scan i2c");
         break;
 
 
@@ -192,6 +192,13 @@ void loop()
 
       case 's':
         scanI2C();
+        break;
+
+      case 'I':
+        Serial.print("RSSI: ");
+        Serial.println(qn8035.GetRssi());
+        Serial.print("SNR: ");
+        Serial.println(qn8035.GetSnr());
         break;
 
       default:

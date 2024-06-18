@@ -38,12 +38,6 @@ QN8035::~QN8035()
 {
 }
 
-void QN8035::PrintLog(const char * log)
-{
-	if(debugSerial)
-		Logger.PrintLnLog(log);
-}
-
 void QN8035::AttachI2CPins(int _sdaPin, int _sclPin)
 {    
 	i2c.AttachI2CPins(_sdaPin,_sclPin);      
@@ -97,7 +91,8 @@ void QN8035::SetWaveClockType(CCA__XTAL_INJ value)
 
 void QN8035::TunerInit()
 {
-	if(debugSerial){
+	if(debug)
+	{
 		Logger.PrintLnLog("TunerInit");
 	}
 
@@ -145,8 +140,11 @@ void QN8035::TunerInit()
 
 void QN8035::SetFrequency(uint16_t frequency)
 {
-	Logger.PrintLog("SetFrequency WORD ");
-	Logger.PrintLnLog(frequency);
+	if(debug)
+	{
+		Logger.PrintLog("SetFrequency WORD ");
+		Logger.PrintLnLog(frequency);
+	}
 
 	FrequencyMHz = WORD_TO_FREQ(frequency);
 	FrequencyCurrent = frequency;
@@ -180,8 +178,11 @@ void QN8035::SetFrequency(uint16_t frequency)
 
 void QN8035::SetFrequencyMHz(float frequency)
 {
-	Logger.PrintLog("SetFrequencyMHz  ");
-	Logger.PrintLnLog(frequency);
+	if(debug)
+	{
+		Logger.PrintLog("SetFrequencyMHz  ");
+		Logger.PrintLnLog(frequency);
+	}
 
 	if(frequency <= LOW_FREQ)
 		frequency = HIGH_FREQ;
@@ -204,11 +205,14 @@ float QN8035::GetFrequencyMHz()
 	
 	delay(100);
 
-    Logger.PrintLnLog("GetFrequency");
-	Logger.PrintLog("Lo ");
-	Logger.PrintLnLog(Lo);
-	Logger.PrintLog("Hi ");
-	Logger.PrintLnLog(Hi);
+	if(debug)
+	{
+		Logger.PrintLnLog("GetFrequency");
+		Logger.PrintLog("Lo ");
+		Logger.PrintLnLog(Lo);
+		Logger.PrintLog("Hi ");
+		Logger.PrintLnLog(Hi);
+	}
 
 	uint16_t value = (Hi << 8) | (Lo & 0xFF);
 
@@ -363,9 +367,11 @@ void QN8035::CheckScanComplete()
 
 void QN8035::SetVolume(uint8_t level)
 {
-	Logger.PrintLog("SetVolume ");
-    Logger.PrintLnLog(level);
-
+	if(debug)
+	{
+		Logger.PrintLog("SetVolume ");
+		Logger.PrintLnLog(level);
+	}
 
 	vol_ctl.SetMUTE_EN(0);
 	vol_ctl.SetTC(0);
@@ -409,8 +415,11 @@ void QN8035::SetVolume(uint8_t level)
 
 void QN8035::SetMute(bool value)
 {
-	Logger.PrintLog("Mute ");
-	Logger.PrintLnLog((value ? (uint8_t)1 : (uint8_t)0));
+	if(debug)
+	{
+		Logger.PrintLog("Mute ");
+		Logger.PrintLnLog((value ? (uint8_t)1 : (uint8_t)0));
+	}
 
 	this->Mute = value;
 
@@ -510,4 +519,18 @@ void QN8035::StartPWMCrystal()
 void QN8035::StopPWMCrystal()
 {
 	this->pwmCrystal.Stop();
+}
+
+int8_t QN8035::GetSnr()
+{
+	snr.Read();
+
+	return snr.GetSNRDB();
+}
+
+int8_t QN8035::GetRssi()
+{
+	rssisig.Read();
+
+	return rssisig.GetRSSIDB();
 }
