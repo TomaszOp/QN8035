@@ -133,6 +133,16 @@
 		void SetCCA_CH_DIS(uint8_t value);
 
 
+		uint8_t SWRST;
+		uint8_t RECAL;
+		uint8_t STNBY;
+		uint8_t RXREQ;
+		uint8_t RDSEN;
+		uint8_t FORCE_MO;
+		uint8_t CHSC;
+		uint8_t CCA_CH_DIS;
+
+
 		private: 
 
 

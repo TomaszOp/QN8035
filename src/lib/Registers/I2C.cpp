@@ -52,9 +52,6 @@
 
 		Wire.beginTransmission(this->addressI2C);
 
-		//delay(I2C_DELAY);
-		//Wire.write(20);
-
 		delay(I2C_DELAY);
 		Wire.write(registerNr);
 		delay(I2C_DELAY);

@@ -135,6 +135,43 @@ enum CCA__XTAL_IMR
 
 
 
+enum VOL_CTL__MUTE_EN
+{
+    MUTE__ON = 0, 
+    MUTE__OFF = 1
+};
+
+enum VOL_CTL__TC
+{
+    TC__50us = 0, 
+    TC__70us = 1
+};
+
+enum VOL_CTL__GAIN_DIG
+{
+    GAIN_DIG__Reduce0dB = 0, 
+    GAIN_DIG__Reduce1dB = 1,
+    GAIN_DIG__Reduce2dB = 2, 
+    GAIN_DIG__Reduce3dB = 3,
+    GAIN_DIG__Reduce4dB = 4, 
+    GAIN_DIG__Reduce5dB = 5
+};
+
+enum VOL_CTL__GAIN_ANA
+{
+    GAIN_ANA__Reduce42dB = 0, 
+    GAIN_ANA__Reduce36dB = 1,
+    GAIN_ANA__Reduce30dB = 2, 
+    GAIN_ANA__Reduce24dB = 3,
+    GAIN_ANA__Reduce18dB = 4, 
+    GAIN_ANA__Reduce12dB = 5,
+    GAIN_ANA__Reduce6dB = 6, 
+    GAIN_ANA__Reduce0dB = 7
+};
+
+
+
+
 #define INIT_FREQ    95.3
 
 #define LOW_FREQ    88.0

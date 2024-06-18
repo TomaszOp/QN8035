@@ -37,8 +37,6 @@
 
 		void RestoreData();
 
-
-
 		LoggerUart Logger;
 	}; 
 

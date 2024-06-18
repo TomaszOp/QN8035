@@ -381,7 +381,6 @@ void QN8035::SetVolume(uint8_t level)
 
 	int8_t value = 7;
 
-
 	if(level <= REG_VOL_CTL_MIN_ANALOG_GAIN || level == 255)
 		level = REG_VOL_CTL_MIN_ANALOG_GAIN;
 
@@ -412,6 +411,21 @@ void QN8035::SetVolume(uint8_t level)
 	vol_ctl.SetGAIN_ANA(Volume);
 	vol_ctl.Write();
 }
+
+uint16_t QN8035::SetVolume(VolumeDirection direction)
+{
+	if(direction == VOLUME_DOWN)
+	{
+		SetVolume(this->Volume - 1);
+	}
+	else if(direction == VOLUME_UP)
+	{
+		SetVolume(this->Volume + 1);
+	}
+
+	return this->Volume;
+}
+
 
 void QN8035::SetMute(bool value)
 {
