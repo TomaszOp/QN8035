@@ -25,7 +25,6 @@
 		void AttachI2CPins(int _sdaPin, int _sclPin);
 		void SetAddressI2C(byte _address);
 
-
         bool debugSerial;
 
 		void WriteRegister(uint8_t registerNr, uint8_t _data);

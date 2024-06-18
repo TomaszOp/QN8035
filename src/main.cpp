@@ -121,8 +121,8 @@ void setup()
     qn8035.StartPWMCrystal();
 }
 
-void loop() {
-
+void loop() 
+{
   delay(30);  
 
   if (Serial.available() > 0)
@@ -166,6 +166,7 @@ void loop() {
         Serial.println(" i Get frequency");
         Serial.println(" r Chip info");
         Serial.println(" m Set mute");
+        Serial.println(" m Scan i2c");
         break;
 
 
@@ -198,5 +199,4 @@ void loop() {
     }
   } 
 }
-
 

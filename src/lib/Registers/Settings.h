@@ -68,6 +68,13 @@ enum STATUS1__ST_MO_RX
 };
 
 
+enum CCA__XTAL_INJ 
+{
+    SineWaveClock = 0, 
+    SquareWaveClock = 1
+};
+
+
 #define INIT_FREQ    95.3
 
 #define LOW_FREQ    88.0

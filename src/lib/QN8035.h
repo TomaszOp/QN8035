@@ -67,7 +67,6 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		void SetAddressI2C(byte _address);
 		void AttachPWMPin(int _pwmPin);
 
-		void Init();
 
 		/*
 		chip registeres
@@ -124,6 +123,9 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz
 		uint16_t GetVolume(void);
 		uint16_t SetVolume(VolumeDirection direction);
 		void SetMute(bool value);
+
+		void SetWaveClockType(CCA__XTAL_INJ value);
+
 
 		int16_t GetSnr();
 		int16_t GetRssi();
