@@ -2,6 +2,7 @@ Library for QN8035 (radio FM chip)
 
 Tested on esp32C3<br>
 Compile platformio (framework = arduino)<br>
+chip radio - serial number 8035 0259 4TCE <br>
 <br>
 not everything is finished<br>
 work:<br>
@@ -10,6 +11,8 @@ work:<br>
  GetFrequency<br>
  SetVolume<br>
  SetMute<br>
+ GetSnr<br>
+	GetRssi<br>
  <br>
  <br>
 All registers (and setting fields) are finished <br>
