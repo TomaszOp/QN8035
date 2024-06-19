@@ -118,6 +118,7 @@
 		Default 0
 		*/
 		void SetCHSC(uint8_t value);
+		uint8_t GetCHSC();
 
 		/*
 		CH (channel index) selection method: See description for CH register at

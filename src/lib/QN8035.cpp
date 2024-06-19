@@ -223,16 +223,24 @@ float QN8035::GetFrequencyMHz()
 	return 0;
 }
 
-uint8_t QN8035::Scan(ScanDirection direction)
+void QN8035::ScanFrequencyUp()
 {
-	if(direction == SCAN_UP)
+	if(debug)
 	{
-		return ScanUp();
+		Logger.PrintLnLog("ScanFrequencyUp");
+	}
+
+	uint8_t newFreg;
+
+	//if(direction == SCAN_UP)
+	//{
+		 newFreg = ScanUp();
+		 /*
 	}
 	else if(direction == SCAN_DOWN)
 	{
-
-	}
+		ScanUp();
+	}*/
 }
 
 uint8_t QN8035::ScanUp()
@@ -264,43 +272,112 @@ uint8_t QN8035::ScanUp()
 
 	*/
 
+	if(debug)
+	{
+		Logger.PrintLnLog("ScanUp");
+	}
+
 	uint8_t REG_CCA_SNR_TH_1 = 0x39;
 	uint8_t REG_CCA_SNR_TH_2  = 0x3A;
 	uint8_t REG_NCCFIR3 = 0x40;
 
 	this->WriteRegister(REG_CCA_SNR_TH_1, 0x00);
 	this->WriteRegister(REG_CCA_SNR_TH_2, 0x05);
-    this->WriteRegister(REG_NCCFIR3, 0x05);
+    //this->WriteRegister(REG_NCCFIR3, 0x05);
+	this->WriteRegister(REG_NCCFIR3, 0xf0);
+	
 
-	uint16_t freqEnd = FREQ_TO_WORD(HIGH_FREQ);
+	float freqStartMhz = 100;
+	float freqEndMhz = 108;
 
-	ch_start.SetCH_STA((FrequencyCurrent + 4) & 0xFF);
-	ch_start.Write();
+	uint16_t freqEnd = FREQ_TO_WORD(freqEndMhz);
+	uint16_t freqStart = FREQ_TO_WORD(freqStartMhz);
 
-	ch_stop.SetCH_STP(freqEnd & 0xFF);
+	if(debug)
+	{
+		Logger.PrintLnLog("set freq start");
+		Logger.PrintLnLog(freqStartMhz);
+	}
+
+	//ch_start.SetCH_STA((FrequencyCurrent + 4) & 0xFF);
+	//ch_start.Write();
+
+	#define REG_CH_START    0x08
+	this->WriteRegister(REG_CH_START, (freqStart + 4) & 0xFF);
+
+
+	if(debug)
+	{
+		Logger.PrintLnLog("set freq End");
+		Logger.PrintLnLog(freqEndMhz);
+	}
+	//ch_stop.SetCH_STP(freqEnd & 0xFF);
+	#define REG_CH_STOP     0x09
+	this->WriteRegister(REG_CH_STOP, freqEnd & 0xFF);
+
 	    
 	uint8_t REG_CH_STEP_50KHZ  = 0x00;
 	uint8_t REG_CH_STEP_100KHZ = 0x40;
 	uint8_t REG_CH_STEP_200KHZ = 0x80;
 	uint8_t REG_CH_STEP =    0x0A;
 
-	this->WriteRegister(REG_CH_STEP, (REG_CH_STEP_200KHZ | ((FrequencyCurrent >> 8) & 0x03) | ((FrequencyCurrent >> 6) & 0x0C) | ((freqEnd >> 4) & 0x30)));    
+
+	if(debug)
+	{
+		Logger.PrintLnLog("set Highest bit");
+	}
+
+	// CH_STEP CH ((FrequencyCurrent >> 8) & 0x03)
+	// Highest 2 bits of 10-bit CCA (channel scan) start channel index:
+    // CH_STEP CH_STA ((FrequencyCurrent >> 6) & 0x0C) 
+	// CH_STEP CH_STP (freqEnd >> 4) & 0x30))
+
+	uint8_t hiStart = freqStart >> 8;
+	uint8_t hiEnd = freqEnd >> 8;
+
+	this->WriteRegister(REG_CH_STEP, 
+		( REG_CH_STEP_50KHZ
+		| ((freqEnd << 4) & 0x30)
+		| ((freqStart << 2) & 0x0C) 
+		//| ((FrequencyCurrent >> 8) & 0x03)
+		)
+	 );    
 
 	uint8_t REG_CCA   =      0x01;
 	uint8_t CCA_LEVEL =  0x10;
 
+	if(debug)
+	{
+		Logger.PrintLnLog("set CCA_LEVEL");
+	}
     this->WriteRegister(REG_CCA, CCA_LEVEL);
 
 	uint8_t REG_SYSTEM1  =   0x00; 
 	uint8_t REG_SYSTEM1_RXREQ  =         0x10;
 	uint8_t REG_SYSTEM1_CHSC =           0x02;
-	uint8_t REG_SYSTEM1_RDSEN   =        0x08;
+	//uint8_t REG_SYSTEM1_RDSEN   =        0x08;
+	uint8_t REG_SYSTEM1_CCA_CH_DIS =     0x00;
+	uint8_t REG_SYSTEM1_STNBY =     0x00;
 
     // Initiate scan up.
-    this->WriteRegister(REG_SYSTEM1, REG_SYSTEM1_RXREQ | REG_SYSTEM1_CHSC | REG_SYSTEM1_RDSEN);
+
+
+	uint8_t valueSYSTEM1 = REG_SYSTEM1_STNBY | REG_SYSTEM1_RXREQ | REG_SYSTEM1_CHSC | REG_SYSTEM1_CCA_CH_DIS;
+	if(debug)
+	{
+		Logger.PrintLnLog("Initiate scan up");
+		Logger.PrintLnLog(valueSYSTEM1);
+		Logger.PrintLogBin(valueSYSTEM1);
+		Logger.PrintLnLog("");
+	}
+
+    this->WriteRegister(REG_SYSTEM1, valueSYSTEM1);
     
     // Handle scanning progress and find new scanned frequency.
     CheckScanComplete();
+	
+
+	return  0;
 }
 
 void QN8035::CheckScanComplete()
@@ -363,6 +440,61 @@ void QN8035::CheckScanComplete()
     }
 
 	*/
+
+	uint8_t timeout, isFound, freqFix;
+    float newFreq;
+    
+    // Check current auto scan status with 2.5sec timeout.
+    timeout = 25;
+    isFound = 0;
+
+	if(debug)
+	{
+		Logger.PrintLnLog("CheckScanComplete");
+	}
+
+    do
+    {
+		if(debug)
+		{
+			Logger.PrintLog("read ");
+			Logger.PrintLnLog(timeout);
+		}
+
+        // Check for end of auto scan operation.
+		uint8_t valuesystem1 = system1.Read();
+		
+		#define REG_SYSTEM1_CHSC 0x02
+
+        if((valuesystem1 & REG_SYSTEM1_CHSC) == 0)
+        {
+            isFound = 1;
+
+			if(debug)
+			{
+				Logger.PrintLnLog("Found");
+
+				ch.Read();
+				ch_step.Read();
+				u_int8_t lo = ch.GetCH();
+				u_int8_t hi = ch_step.GetCH();
+
+				u_int16_t newFreq = (lo) | ((hi & 0x03) << 8); 
+				float newFreqMhz = WORD_TO_FREQ(newFreq);
+
+				Logger.PrintLog("Found newFreqMhz " );
+				Logger.PrintLnLog(newFreqMhz);
+			}
+
+            break;
+        }
+            
+        timeout--;
+        usleep(5000);        
+    } 
+    while (timeout != 0);
+
+
 }
 
 void QN8035::SetVolume(uint8_t level)

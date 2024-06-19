@@ -55,6 +55,11 @@
 		this->Data = (this->Data & 0b11111101) | (value << 1);
 	}
 
+	uint8_t REG_SYSTEM1::GetCHSC()
+	{
+		return (this->Data >> 1) & 0b00000001;
+	}
+
 	void REG_SYSTEM1::SetCCA_CH_DIS(uint8_t value)
 	{
 		CCA_CH_DIS = value;
