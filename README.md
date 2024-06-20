@@ -16,7 +16,7 @@ work:<br>
  GetRssi<br>
  ScanFrequency (to improve parameter XCCADL now is 4)<br>
  <br>
- to do
+ to do:<br>
  read RDS
  <br>
 All registers (and setting fields) are finished <br>
