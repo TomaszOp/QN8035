@@ -13,7 +13,7 @@ work:<br>
  SetMute<br>
  GetSnr<br>
  GetRssi<br>
- ScanFrequency<br>
+ ScanFrequency (to improve parameter XCCADL now is 4)<br>
  <br>
  <br>
 All registers (and setting fields) are finished <br>
