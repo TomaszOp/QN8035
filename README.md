@@ -12,7 +12,8 @@ work:<br>
  SetVolume<br>
  SetMute<br>
  GetSnr<br>
-	GetRssi<br>
+ GetRssi<br>
+ ScanFrequency<br>
  <br>
  <br>
 All registers (and setting fields) are finished <br>
