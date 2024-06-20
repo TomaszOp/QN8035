@@ -223,230 +223,89 @@ float QN8035::GetFrequencyMHz()
 	return 0;
 }
 
-void QN8035::ScanFrequencyUp()
+float QN8035::ScanFrequencyUp()
 {
 	if(debug)
 	{
 		Logger.PrintLnLog("ScanFrequencyUp");
 	}
 
-	uint8_t newFreg;
-
-	//if(direction == SCAN_UP)
-	//{
-		 newFreg = ScanUp();
-		 /*
-	}
-	else if(direction == SCAN_DOWN)
-	{
-		ScanUp();
-	}*/
+	return Scan(FrequencyMHz, HIGH_FREQ);
 }
 
-uint8_t QN8035::ScanUp()
+float QN8035::ScanFrequencyDown()
 {
-	/*
-	USHORT freqEnd;    
-    
-    SET_REG(REG_CCA_SNR_TH_1, 0x00);
-    SET_REG(REG_CCA_SNR_TH_2, 0x05);
-    SET_REG(REG_NCCFIR3, 0x05);
-    
-    freqEnd = FREQ_TO_WORD(HIGH_FREQ);
-
-    // Set start frequency with +200kHz offset with current frequency.
-    SET_REG(REG_CH_START, (currentFreq + 4) & 0xFF);
-
-    // Set stop frequency.
-    SET_REG(REG_CH_STOP, freqEnd & 0xFF);
-    
-    SET_REG(REG_CH_STEP, (REG_CH_STEP_200KHZ | ((currentFreq >> 8) & 0x03) | ((currentFreq >> 6) & 0x0C) | ((freqEnd >> 4) & 0x30)));    
-
-    SET_REG(REG_CCA, CCA_LEVEL);
-
-    // Initiate scan up.
-    SET_REG(REG_SYSTEM1, REG_SYSTEM1_RXREQ | REG_SYSTEM1_CHSC | REG_SYSTEM1_RDSEN);
-    
-    // Handle scanning progress and find new scanned frequency.
-    checkScanComplete();
-
-	*/
-
 	if(debug)
 	{
-		Logger.PrintLnLog("ScanUp");
+		Logger.PrintLnLog("ScanFrequencyDown");
 	}
 
-	uint8_t REG_CCA_SNR_TH_1 = 0x39;
-	uint8_t REG_CCA_SNR_TH_2  = 0x3A;
-	uint8_t REG_NCCFIR3 = 0x40;
+	return Scan(LOW_FREQ, FrequencyMHz);
+}
 
-	this->WriteRegister(REG_CCA_SNR_TH_1, 0x00);
-	this->WriteRegister(REG_CCA_SNR_TH_2, 0x05);
-    //this->WriteRegister(REG_NCCFIR3, 0x05);
-	this->WriteRegister(REG_NCCFIR3, 0xf0);
-	
-
-	float freqStartMhz = 100;
-	float freqEndMhz = 108;
-
-	uint16_t freqEnd = FREQ_TO_WORD(freqEndMhz);
+float QN8035::Scan(float freqStartMhz, float freqEndMhz)
+{
 	uint16_t freqStart = FREQ_TO_WORD(freqStartMhz);
+	uint16_t freqEnd = FREQ_TO_WORD(freqEndMhz);
 
-	if(debug)
+	if(freqStart < freqEndMhz)
 	{
-		Logger.PrintLnLog("set freq start");
-		Logger.PrintLnLog(freqStartMhz);
+		freqStart = freqStart + 4;
+	}
+	else if (freqStart > freqEndMhz)
+	{
+		freqEnd = freqEnd - 4;
 	}
 
-	//ch_start.SetCH_STA((FrequencyCurrent + 4) & 0xFF);
-	//ch_start.Write();
 
-	#define REG_CH_START    0x08
-	this->WriteRegister(REG_CH_START, (freqStart + 4) & 0xFF);
+	uint8_t hiFreqStart = (freqStart >> 8) & 0b00000011;
+	uint8_t loFreqStart = (freqStart & 0xFF);
 
+	uint8_t hiFreqEnd = (freqEnd >> 8) & 0b00000011;
+	uint8_t loFreqEnd = (freqEnd & 0xFF);
 
-	if(debug)
-	{
-		Logger.PrintLnLog("set freq End");
-		Logger.PrintLnLog(freqEndMhz);
-	}
-	//ch_stop.SetCH_STP(freqEnd & 0xFF);
-	#define REG_CH_STOP     0x09
-	this->WriteRegister(REG_CH_STOP, freqEnd & 0xFF);
+	ch_start.SetCH_STA(loFreqStart);
+	ch_step.SetCH_STA(hiFreqStart);
 
-	    
+	ch_stop.SetCH_STP(loFreqEnd);
+	ch_step.SetCH_STP(hiFreqEnd);
+
+	ch.SetCH(loFreqStart);
+	ch_step.SetCH(hiFreqStart);
+
 	uint8_t REG_CH_STEP_50KHZ  = 0x00;
 	uint8_t REG_CH_STEP_100KHZ = 0x40;
 	uint8_t REG_CH_STEP_200KHZ = 0x80;
 	uint8_t REG_CH_STEP =    0x0A;
+	ch_step.SetFSTEP(REG_CH_STEP_50KHZ);
 
 
-	if(debug)
-	{
-		Logger.PrintLnLog("set Highest bit");
-	}
+	ch_start.Write();
+	ch_stop.Write();
+	ch_step.Write();
 
-	// CH_STEP CH ((FrequencyCurrent >> 8) & 0x03)
-	// Highest 2 bits of 10-bit CCA (channel scan) start channel index:
-    // CH_STEP CH_STA ((FrequencyCurrent >> 6) & 0x0C) 
-	// CH_STEP CH_STP (freqEnd >> 4) & 0x30))
+	uint8_t CCA_LEVEL =  0x04;
+	cca.SetXCCADL(CCA_LEVEL);
 
-	uint8_t hiStart = freqStart >> 8;
-	uint8_t hiEnd = freqEnd >> 8;
+	system1.SetCCA_CH_DIS(0);
+	system1.SetCHSC(1);
+	system1.SetRXREQ(1);
+	system1.SetSTNBY(0);
 
-	this->WriteRegister(REG_CH_STEP, 
-		( REG_CH_STEP_50KHZ
-		| ((freqEnd << 4) & 0x30)
-		| ((freqStart << 2) & 0x0C) 
-		//| ((FrequencyCurrent >> 8) & 0x03)
-		)
-	 );    
+	system1.Write();
 
-	uint8_t REG_CCA   =      0x01;
-	uint8_t CCA_LEVEL =  0x10;
-
-	if(debug)
-	{
-		Logger.PrintLnLog("set CCA_LEVEL");
-	}
-    this->WriteRegister(REG_CCA, CCA_LEVEL);
-
-	uint8_t REG_SYSTEM1  =   0x00; 
-	uint8_t REG_SYSTEM1_RXREQ  =         0x10;
-	uint8_t REG_SYSTEM1_CHSC =           0x02;
-	//uint8_t REG_SYSTEM1_RDSEN   =        0x08;
-	uint8_t REG_SYSTEM1_CCA_CH_DIS =     0x00;
-	uint8_t REG_SYSTEM1_STNBY =     0x00;
-
-    // Initiate scan up.
-
-
-	uint8_t valueSYSTEM1 = REG_SYSTEM1_STNBY | REG_SYSTEM1_RXREQ | REG_SYSTEM1_CHSC | REG_SYSTEM1_CCA_CH_DIS;
-	if(debug)
-	{
-		Logger.PrintLnLog("Initiate scan up");
-		Logger.PrintLnLog(valueSYSTEM1);
-		Logger.PrintLogBin(valueSYSTEM1);
-		Logger.PrintLnLog("");
-	}
-
-    this->WriteRegister(REG_SYSTEM1, valueSYSTEM1);
-    
-    // Handle scanning progress and find new scanned frequency.
-    CheckScanComplete();
+    return CheckScanComplete();
 	
-
-	return  0;
 }
 
-void QN8035::CheckScanComplete()
+float QN8035::CheckScanComplete()
 {
-	/*
-	UCHAR timeout, isFound, freqFix;
-    USHORT newFreq;
-    
-    // Check current auto scan status with 2.5sec timeout.
-    timeout = 25;
-    isFound = 0;
-
-    do
-    {
-        // Check for end of auto scan operation.
-        if((GET_REG(REG_SYSTEM1) & REG_SYSTEM1_CHSC) == 0)
-        {
-            isFound = 1;
-            break;
-        }
-            
-        timeout--;
-        usleep(5000);        
-    } 
-    while (timeout != 0);
-
-    if(isFound)
-    {
-        // If scan completes, get the new frequency from the QN8035 tuner.
-        newFreq = GET_REG(REG_CH) | ((GET_REG(REG_CH_STEP) & 0x03) << 8); 
-        freqFix = 0;
-	    
-        // Fix: In some cases we notice receiver jump to 85MHz/111MHz if scanner goes beyond 98.25MHz or 98.4MHz.
-        if((newFreq < FREQ_TO_WORD(LOW_FREQ)) && (currentFreq > FREQ_TO_WORD(LOW_FREQ)) && (currentFreq < FREQ_TO_WORD(98.3)))
-        {
-            newFreq = FREQ_TO_WORD(98.4);
-            freqFix = 1;
-        }
-        else if((newFreq > FREQ_TO_WORD(HIGH_FREQ)) && (currentFreq > FREQ_TO_WORD(98.3)) && (currentFreq < FREQ_TO_WORD(HIGH_FREQ)))
-        {
-            newFreq = FREQ_TO_WORD(98.2);
-            freqFix = 1;
-        }
-
-        if(freqFix)
-        {
-            // Scanner reset occure, set frequency above 98.25MHz!
-            SET_REG(REG_CH, (newFreq & 0xFF));                // Lo
-            SET_REG(REG_CH_STEP, ((newFreq >> 8) & 0x03));    // Hi
-
-            usleep(100);
-            SET_REG(REG_SYSTEM1, REG_SYSTEM1_CCA_CH_DIS | REG_SYSTEM1_RXREQ | REG_SYSTEM1_RDSEN);
-        }
-
-        // Verify limits and set new frequency as a default frequency.
-        if((newFreq < FREQ_TO_WORD(HIGH_FREQ)) && (newFreq > FREQ_TO_WORD(LOW_FREQ)))
-        {
-            currentFreq = newFreq;
-        }   
-    }
-
-	*/
-
 	uint8_t timeout, isFound, freqFix;
-    float newFreq;
+    float newFreqMhz;
     
-    // Check current auto scan status with 2.5sec timeout.
     timeout = 25;
     isFound = 0;
+	newFreqMhz = 0;
 
 	if(debug)
 	{
@@ -473,14 +332,19 @@ void QN8035::CheckScanComplete()
 			if(debug)
 			{
 				Logger.PrintLnLog("Found");
+			}
 
-				ch.Read();
-				ch_step.Read();
-				u_int8_t lo = ch.GetCH();
-				u_int8_t hi = ch_step.GetCH();
+			ch.Read();
+			ch_step.Read();
+			u_int8_t lo = ch.GetCH();
+			u_int8_t hi = ch_step.GetCH();
 
-				u_int16_t newFreq = (lo) | ((hi & 0x03) << 8); 
-				float newFreqMhz = WORD_TO_FREQ(newFreq);
+			u_int16_t newFreq = (lo) | ((hi & 0x03) << 8); 
+			newFreqMhz = WORD_TO_FREQ(newFreq);
+
+			if(debug)
+			{
+				Logger.PrintLnLog("Found");
 
 				Logger.PrintLog("Found newFreqMhz " );
 				Logger.PrintLnLog(newFreqMhz);
@@ -494,7 +358,7 @@ void QN8035::CheckScanComplete()
     } 
     while (timeout != 0);
 
-
+	return newFreqMhz;
 }
 
 void QN8035::SetVolume(uint8_t level)
@@ -576,32 +440,50 @@ void QN8035::SetMute(bool value)
 
 void QN8035::TunerTest()
 {
-	/*
-	0x00,0x80, // initialize ①
-	0x0a,0x01, // 80.0mHz　②
-	0x07,0x90, // 
-	//0x0a,0x01, //82.5 ②
-	//0x07,0xC2, //
-	0x00,0b00010001, // receive, seek0　③
-	0x14,0b00000111, //mute0,de50,vol111　④
-	*/
+	float freqStartMhz = 90;
+	float freqEndMhz = 108;
 
-	i2c.WriteRegister(0x00,0x80);
-	delay(300);
 
-	i2c.WriteRegister(0x0a,0x01);
-	delay(300);
-	i2c.WriteRegister(0x07,0x90);
-	/*
-	i2c.WriteRegister(0x0a,0x01);
-	delay(300);
-	i2c.WriteRegister(0x07,0xc2);
-	*/
-	delay(300);
-	i2c.WriteRegister(0x00,0b00010001);
-	delay(300);
-	i2c.WriteRegister(0x14,0b00000111);
-	delay(300);
+	uint16_t freqStart = FREQ_TO_WORD(freqStartMhz);
+	uint16_t freqEnd = FREQ_TO_WORD(freqEndMhz);
+
+	uint8_t hiFreqStart = (freqStart >> 8) & 0b00000011;
+	uint8_t loFreqStart = (freqStart & 0xFF);
+
+	uint8_t hiFreqEnd = (freqEnd >> 8) & 0b00000011;
+	uint8_t loFreqEnd = (freqEnd & 0xFF);
+
+	ch_start.SetCH_STA(loFreqStart);
+	ch_step.SetCH_STA(hiFreqStart);
+
+	ch_stop.SetCH_STP(loFreqEnd);
+	ch_step.SetCH_STP(hiFreqEnd);
+
+	ch.SetCH(loFreqStart);
+	ch_step.SetCH(hiFreqStart);
+
+	uint8_t REG_CH_STEP_50KHZ  = 0x00;
+	uint8_t REG_CH_STEP_100KHZ = 0x40;
+	uint8_t REG_CH_STEP_200KHZ = 0x80;
+	uint8_t REG_CH_STEP =    0x0A;
+	ch_step.SetFSTEP(REG_CH_STEP_50KHZ);
+
+
+	ch_start.Write();
+	ch_stop.Write();
+	ch_step.Write();
+
+	uint8_t CCA_LEVEL =  0x04;
+	cca.SetXCCADL(CCA_LEVEL);
+
+
+	system1.SetCCA_CH_DIS(0);
+	system1.SetCHSC(1);
+	system1.SetRXREQ(1);
+	system1.SetSTNBY(0);
+
+	system1.Write();
+
 }
 
 void QN8035::TunerTest2()

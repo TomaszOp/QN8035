@@ -111,9 +111,6 @@ void setup()
     //pinMode(SdaPin, PULLUP);
     //pinMode(SclPin, PULLUP);
 
-    //qn8035.TunerTest();
-    //qn8035.TunerTest2();
-
     qn8035.TunerInit();
 
     qn8035.SetVolume(3);
@@ -123,6 +120,8 @@ void setup()
 
 void loop() 
 {
+  float freqNext = 0;
+
   delay(30);  
 
   if (Serial.available() > 0)
@@ -190,7 +189,19 @@ void loop()
         break;
 
       case '>':
-        qn8035.ScanFrequencyUp();
+        freqNext = qn8035.ScanFrequencyUp();
+        Serial.print("Frequency: ");
+        Serial.println(freqNext);
+        break;
+
+      case '<':
+        freqNext = qn8035.ScanFrequencyDown();
+        Serial.print("Frequency: ");
+        Serial.println(freqNext);
+        break;
+
+      case 't':
+        qn8035.TunerTest();
         break;
 
 

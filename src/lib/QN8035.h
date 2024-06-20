@@ -118,7 +118,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		void SetFrequencyMHz(float frequency);
 		float GetFrequencyMHz();
 		
-		uint8_t Scan(ScanDirection direction);
+		float Scan(ScanDirection direction);
 
 		void SetVolume(uint8_t vale);
 		uint16_t GetVolume(void);
@@ -131,8 +131,8 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		int8_t GetSnr();
 		int8_t GetRssi();
 
-		void ScanFrequencyDown();
-		void ScanFrequencyUp();
+		float ScanFrequencyDown();
+		float ScanFrequencyUp();
 
 		void InitRDS();
 
@@ -170,8 +170,8 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		void WriteRegister(uint8_t registerNr, uint8_t _data);
         uint8_t ReadRegister(uint8_t registerNr);
 
-		uint8_t ScanUp();
-		void CheckScanComplete();
+		float Scan(float freqStartMhz, float freqEndMhz);
+		float CheckScanComplete();
 	}; 
 
 #endif
