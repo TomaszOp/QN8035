@@ -112,7 +112,8 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		chip QN8035 method for users
 		*/
 		void TunerInit();
-		uint8_t TunerShutdown();
+
+		void SetStandby(bool value);
 
 		void SetFrequency(uint16_t frequency);
 		void SetFrequencyMHz(float frequency);

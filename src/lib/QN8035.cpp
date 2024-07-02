@@ -136,6 +136,10 @@ void QN8035::TunerInit()
 
 }
 
+void QN8035::SetStandby(bool value)
+{
+	system1.SetSTNBY((value ? 1: 0));
+}
 
 
 void QN8035::SetFrequency(uint16_t frequency)
