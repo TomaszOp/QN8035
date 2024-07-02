@@ -11,8 +11,13 @@ work:<br>
  GetFrequency<br>
  SetVolume<br>
  SetMute<br>
+ SetMono<br>
  GetSnr<br>
-	GetRssi<br>
+ GetRssi<br>
+ ScanFrequency (to improve parameter XCCADL now is 4)<br>
+ <br>
+ to do:<br>
+ read RDS
  <br>
  <br>
 All registers (and setting fields) are finished <br>
