@@ -31,5 +31,5 @@
 
 	void REG_CCA::SetXCCADL(uint8_t value)
 	{
-		this->Data = (this->Data & 0b11100000) | value ;
+		this->Data = (this->Data & 0b11000000) | value ;
 	}

@@ -33,3 +33,13 @@
 	{
 		this->Data = (this->Data & 0b11111000) | (value);
 	}
+
+	uint8_t REG_VOL_CTL::GetGAIN_ANA()
+	{
+		return this->Data & 0b00000111;
+	}
+
+	uint8_t REG_VOL_CTL::GetGAIN_DIG()
+	{
+		return (this->Data >> 3) & 0b00000111;
+	}

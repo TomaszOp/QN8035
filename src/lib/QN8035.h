@@ -40,7 +40,7 @@
 
 #define DEFAULT_PWMPin 7
 
-#define FREQ_TO_WORD(f) ((uint16_t)((f - 60) / 0.05))
+#define FREQ_TO_WORD(f) ((uint16_t)(((f) - 60) / 0.05 + 0.5))
 #define WORD_TO_FREQ(w) (((float)w * 0.05) + 60)
 
 /*
@@ -121,10 +121,26 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		
 		float Scan(ScanDirection direction);
 
-		void SetVolume(uint8_t vale);
-		uint16_t GetVolume(void);
-		uint16_t SetVolume(VolumeDirection direction);
+		void SetVolumeA(uint8_t vale);
+		uint8_t GetVolumeA(void);
+		uint8_t SetVolumeA(VolumeDirection direction);
+
+		/*
+		full volume 0 - 47 in 1 dB steps (47 = 0 dB, 0 = -47 dB)
+		uses GAIN_ANA (6 dB steps) and GAIN_DIG (1 dB steps)
+		*/
+		void SetVolume(uint8_t level);
+		uint8_t SetVolume(VolumeDirection direction);
+		uint8_t GetVolume(void);
 		void SetMute(bool value);
+
+		/*
+		SetMono(true) forces mono output (FORCE_MO), false = auto stereo / mono
+		IsStereo() reads from chip whether the station is received in stereo (ST_MO_RX)
+		*/
+		void SetMono(bool value);
+		bool GetMono();
+		bool IsStereo();
 
 		void SetWaveClockType(CCA__XTAL_INJ value);
 
@@ -135,7 +151,35 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		float ScanFrequencyDown();
 		float ScanFrequencyUp();
 
+		/*
+		scan frequency step, used by ScanFrequencyUp / ScanFrequencyDown
+		*/
+		void SetScanStep(CH_STEP__FSTEP step);
+		CH_STEP__FSTEP GetScanStep();
+
+		/*
+		scan threshold RXCCAD (0 - 63), channel is valid if RSSI (dBuV) > (level - 10)
+		default DEFAULT_CCA_LEVEL
+		*/
+		void SetCCALevel(uint8_t level);
+		uint8_t GetCCALevel();
+
+		/*
+		RDS
+		InitRDS() enables RDS on the current station,
+		ReadRDS() must be called often (every < 80 ms), returns true when a new valid group was decoded.
+		*/
 		void InitRDS();
+		void SetRDS(bool value);
+		bool ReadRDS();
+		void ClearRDS();
+
+		bool RdsEnabled;
+		bool RdsSync;
+		uint16_t RdsPI;       // Program Identification
+		uint8_t RdsPTY;       // Program Type
+		char RdsPS[9];        // Program Service name, 8 chars
+		char RdsRT[65];       // RadioText, up to 64 chars
 
 
 		/*
@@ -145,7 +189,11 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		uint16_t FrequencyCurrent;
 
 		uint8_t Volume;
+		uint8_t VolumeFull;
+		CH_STEP__FSTEP ScanStep;
+		uint8_t CCALevel;
 		bool Mute;
+		bool Mono;
 
 
 		/*
@@ -173,6 +221,10 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 
 		float Scan(float freqStartMhz, float freqEndMhz);
 		float CheckScanComplete();
+
+		uint8_t rdsLastUpdate;
+		uint8_t rdsTextAB;
+		void DecodeRDS(uint16_t blockA, uint16_t blockB, uint16_t blockC, uint16_t blockD, uint8_t errors);
 	}; 
 
 #endif

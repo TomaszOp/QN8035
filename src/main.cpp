@@ -9,6 +9,9 @@
 
 QN8035 qn8035;
 
+char lastPS[9] = "";
+char lastRT[65] = "";
+
 void scanI2C() {
   byte error, address;
   int nDevices;
@@ -88,6 +91,11 @@ void setup()
     qn8035.i2c.debugSerial = true;
     qn8035.debug = true;
 
+    /*
+    start virtual quartz before init, chip needs clock for reset and calibration
+    */
+    qn8035.StartPWMCrystal();
+
     // testing
     /*
     int pwmChannel = 0; // Selects channel 0
@@ -113,9 +121,8 @@ void setup()
 
     qn8035.TunerInit();
 
-    qn8035.SetVolume(3);
+    qn8035.SetVolumeA(3);
 
-    qn8035.StartPWMCrystal();
 }
 
 void loop() 
@@ -138,13 +145,13 @@ void loop()
         break;
       
       case '+':
-        qn8035.SetVolume(qn8035.Volume + 1);
+        qn8035.SetVolumeA(qn8035.Volume + 1);
         Serial.print("Volume: ");
         Serial.println(qn8035.Volume);
         break;
 
       case '-':
-        qn8035.SetVolume(qn8035.Volume - 1);
+        qn8035.SetVolumeA(qn8035.Volume - 1);
         Serial.print("Volume: ");
         Serial.println(qn8035.Volume);
         break;
@@ -158,6 +165,8 @@ void loop()
         Serial.println(" r Chip info");
         Serial.println(" m Set mute");
         Serial.println(" s Scan i2c");
+        Serial.println(" d RDS on/off");
+        Serial.println(" D RDS info");
         break;
 
 
@@ -200,6 +209,25 @@ void loop()
         Serial.println(freqNext);
         break;
 
+      case 'd':
+        qn8035.SetRDS(!qn8035.RdsEnabled);
+        Serial.print("RDS: ");
+        Serial.println(qn8035.RdsEnabled ? 1 : 0);
+        break;
+
+      case 'D':
+        Serial.print("RDS sync: ");
+        Serial.println(qn8035.RdsSync ? 1 : 0);
+        Serial.print("PI: ");
+        Serial.println(qn8035.RdsPI, HEX);
+        Serial.print("PTY: ");
+        Serial.println(qn8035.RdsPTY);
+        Serial.print("PS: ");
+        Serial.println(qn8035.RdsPS);
+        Serial.print("RT: ");
+        Serial.println(qn8035.RdsRT);
+        break;
+
       case 't':
         qn8035.TunerTest();
         break;
@@ -209,5 +237,22 @@ void loop()
         break;
     }
   } 
+
+  if (qn8035.RdsEnabled && qn8035.ReadRDS())
+  {
+    if (strcmp(lastPS, qn8035.RdsPS) != 0)
+    {
+      strcpy(lastPS, qn8035.RdsPS);
+      Serial.print("PS: ");
+      Serial.println(qn8035.RdsPS);
+    }
+
+    if (strcmp(lastRT, qn8035.RdsRT) != 0)
+    {
+      strcpy(lastRT, qn8035.RdsRT);
+      Serial.print("RT: ");
+      Serial.println(qn8035.RdsRT);
+    }
+  }
 }
 

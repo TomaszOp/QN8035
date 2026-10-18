@@ -172,6 +172,15 @@ enum VOL_CTL__GAIN_ANA
 
 
 
+enum CH_STEP__FSTEP
+{
+    FSTEP__50kHz = 0, 
+    FSTEP__100kHz = 1,
+    FSTEP__200kHz = 2
+};
+
+
+
 #define INIT_FREQ    95.3
 
 #define LOW_FREQ    88.0
@@ -180,6 +189,14 @@ enum VOL_CTL__GAIN_ANA
 #define REG_VOL_CTL_MAX_ANALOG_GAIN 0x07
 #define REG_VOL_CTL_MIN_ANALOG_GAIN 0x00
 #define REG_VOL_CTL_START_ANALOG_GAIN 0x03
+
+// full volume 0 - 47 (GAIN_ANA 6 dB steps + GAIN_DIG 1 dB steps), 47 = 0 dB, 0 = -47 dB
+#define VOLUME_MAX 47
+#define VOLUME_MIN 0
+
+// RXCCAD[5:0] scan threshold, channel valid if RSSI (dBuV) > (CCA_LEVEL - 10)
+#define DEFAULT_CCA_LEVEL 0x04
+#define MAX_CCA_LEVEL 0x3F
 
 
 typedef enum 
