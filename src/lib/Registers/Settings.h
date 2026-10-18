@@ -85,14 +85,15 @@ enum SYSTEM1__CCA_CH_DIS
 
 enum STATUS1__FSM 
 {
+    // values of STATUS1 bits 6:4, REG_STATUS1::GetFSM()
     FSM__STBY = 0, 
     FSM__RESET  = 1,
-    FSM__CALI = 3, 
-    FSM__IDLE  = 4,
-    FSM__CALIPLL = 5, 
-    FSM__RECEIVEING  = 6,
-    FSM__Reserved  = 7,
-    FSM__RXCCA  = 8
+    FSM__CALI = 2, 
+    FSM__IDLE  = 3,
+    FSM__CALIPLL = 4, 
+    FSM__RECEIVING  = 5,
+    FSM__Reserved  = 6,
+    FSM__RXCCA  = 7
 };
 
 enum STATUS1__RXCCA_FAIL
