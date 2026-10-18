@@ -12,6 +12,7 @@ work:<br>
  SetVolumeA<br>
  SetMute<br>
  SetMono<br>
+ SetTestTone (1 kHz)<br>
  GetSnr<br>
  GetRssi<br>
  ScanFrequency (to improve parameter XCCADL now is 4)<br>
@@ -23,6 +24,17 @@ work:<br>
 All registers (and setting fields) are finished <br>
 I didn't have a quartz, i made a virtual quartz using PWM (add resistor 10k to PWMPin and XCLK)
 
+
+## Test tone 1 kHz
+
+The chip can replace the received audio with an internal 1 kHz tone (`S1K_EN`, Reg 18h bit 4). Useful to test the audio path (amplifier, headphones, wiring) without a station.
+
+```cpp
+qn8035.SetTestTone(true);   // 1 kHz on the audio output
+qn8035.SetTestTone(false);  // back to radio
+```
+
+Works in RX mode (after `TunerInit()`, not in standby). Volume (`SetVolume`) and `SetMute` still apply. `TunerInit()` turns the tone off (soft reset). Serial console in `main.cpp`: `T` tone on/off.
 
 ## RDS
 

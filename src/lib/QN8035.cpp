@@ -34,6 +34,7 @@ QN8035::QN8035()
 
 	Mute = false;
 	Mono = false;
+	TestTone = false;
 	ScanStep = FSTEP__50kHz;
 	CCALevel = DEFAULT_CCA_LEVEL;
 
@@ -114,6 +115,9 @@ void QN8035::TunerInit()
 	// release reset, keep RECAL until SetFrequency
 	system1.SetSWRST(0);
 	system1.Write();
+
+	// soft reset restored INT_CTRL defaults, test tone is off
+	TestTone = false;
 
 	// clock wave digital clock -- Square
 	cca.SetXTAL_INJ(SquareWaveClock);
@@ -606,6 +610,27 @@ void QN8035::SetMono(bool value)
 bool QN8035::GetMono()
 {
 	return this->Mono;
+}
+
+void QN8035::SetTestTone(bool value)
+{
+	if(debug)
+	{
+		Logger.PrintLog("TestTone ");
+		Logger.PrintLnLog((value ? (uint8_t)1 : (uint8_t)0));
+	}
+
+	this->TestTone = value;
+
+	// INT_CTRL is write only (read back returns the written value), keep other bits
+	int_ctrl.Read();
+	int_ctrl.SetS1K_EN((value ? 1 : 0));
+	int_ctrl.Write();
+}
+
+bool QN8035::GetTestTone()
+{
+	return this->TestTone;
 }
 
 bool QN8035::IsStereo()

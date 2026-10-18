@@ -167,6 +167,7 @@ void loop()
         Serial.println(" s Scan i2c");
         Serial.println(" d RDS on/off");
         Serial.println(" D RDS info");
+        Serial.println(" T Test tone 1 kHz on/off");
         break;
 
 
@@ -226,6 +227,12 @@ void loop()
         Serial.println(qn8035.RdsPS);
         Serial.print("RT: ");
         Serial.println(qn8035.RdsRT);
+        break;
+
+      case 'T':
+        qn8035.SetTestTone(!qn8035.TestTone);
+        Serial.print("Test tone 1 kHz: ");
+        Serial.println(qn8035.TestTone ? 1 : 0);
         break;
 
       case 't':

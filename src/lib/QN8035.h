@@ -144,6 +144,14 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 
 		void SetWaveClockType(CCA__XTAL_INJ value);
 
+		/*
+		internal 1 kHz test tone on the audio output (S1K_EN), for testing the audio path
+		works in RX mode (chip not in standby), replaces the received audio
+		volume and mute settings still apply
+		*/
+		void SetTestTone(bool value);
+		bool GetTestTone();
+
 
 		int8_t GetSnr();
 		int8_t GetRssi();
@@ -194,6 +202,7 @@ DEFAULT_PWMPin pin Quatz if not exist real quartz, add resistor 10k to PWMPin an
 		uint8_t CCALevel;
 		bool Mute;
 		bool Mono;
+		bool TestTone;
 
 
 		/*
