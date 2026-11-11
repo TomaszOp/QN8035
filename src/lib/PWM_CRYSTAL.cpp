@@ -1,6 +1,20 @@
 #include "PWM_CRYSTAL.h"
 #include "driver/ledc.h"
 
+// arduino-esp32 core version, ESP_ARDUINO_VERSION_MAJOR (header exists since core 2.0.0)
+#if __has_include("esp_arduino_version.h")
+#include "esp_arduino_version.h"
+#endif
+
+#ifndef ESP_ARDUINO_VERSION_MAJOR
+#define ESP_ARDUINO_VERSION_MAJOR 1
+#endif
+
+// core 3.x: LEDC API uses pin instead of channel (ledcAttach / ledcWrite(pin, duty))
+#if ESP_ARDUINO_VERSION_MAJOR >= 3
+#define PWM_CRYSTAL_LEDC_PIN_API
+#endif
+
 	PWM_CRYSTAL::PWM_CRYSTAL()
 	{
 		this->Pin = DEFAULT_PWM_Pin;   
@@ -28,6 +42,15 @@
 		//int frequence = 4000000; // PWM frequency 
 		int resolution = 8; // bit resolution, 2 possible values
 		int pwmPin = this->Pin;
+
+#ifdef PWM_CRYSTAL_LEDC_PIN_API
+		// core 3.x: channel is selected automatically
+		(void)pwmChannel;
+		ledcAttach(pwmPin, frequence, resolution);
+
+		// Create the selected output voltage
+		ledcWrite(pwmPin, 2); // 50%
+#else
 		ledcSetup(pwmChannel, frequence, resolution);
 
 		// Assigns the PWM channel to pin 
@@ -35,6 +58,7 @@
 
 		// Create the selected output voltage
 		ledcWrite(pwmChannel, 2); // 50%
+#endif
 
 		/*
 		ledc_mode_t speed_mode = LEDC_LOW_SPEED_MODE;
@@ -76,7 +100,11 @@
 
 	void PWM_CRYSTAL::Stop()
 	{
+#ifdef PWM_CRYSTAL_LEDC_PIN_API
+		ledcWrite(this->Pin, 0);
+#else
 		int pwmChannel = 0; // Selects channel 0
 		ledcWrite(pwmChannel, 0); // 50%
+#endif
 	}
 	

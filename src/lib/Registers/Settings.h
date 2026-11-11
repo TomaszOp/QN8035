@@ -85,14 +85,15 @@ enum SYSTEM1__CCA_CH_DIS
 
 enum STATUS1__FSM 
 {
+    // values of STATUS1 bits 6:4, REG_STATUS1::GetFSM()
     FSM__STBY = 0, 
     FSM__RESET  = 1,
-    FSM__CALI = 3, 
-    FSM__IDLE  = 4,
-    FSM__CALIPLL = 5, 
-    FSM__RECEIVEING  = 6,
-    FSM__Reserved  = 7,
-    FSM__RXCCA  = 8
+    FSM__CALI = 2, 
+    FSM__IDLE  = 3,
+    FSM__CALIPLL = 4, 
+    FSM__RECEIVING  = 5,
+    FSM__Reserved  = 6,
+    FSM__RXCCA  = 7
 };
 
 enum STATUS1__RXCCA_FAIL
@@ -172,6 +173,15 @@ enum VOL_CTL__GAIN_ANA
 
 
 
+enum CH_STEP__FSTEP
+{
+    FSTEP__50kHz = 0, 
+    FSTEP__100kHz = 1,
+    FSTEP__200kHz = 2
+};
+
+
+
 #define INIT_FREQ    95.3
 
 #define LOW_FREQ    88.0
@@ -180,6 +190,14 @@ enum VOL_CTL__GAIN_ANA
 #define REG_VOL_CTL_MAX_ANALOG_GAIN 0x07
 #define REG_VOL_CTL_MIN_ANALOG_GAIN 0x00
 #define REG_VOL_CTL_START_ANALOG_GAIN 0x03
+
+// full volume 0 - 47 (GAIN_ANA 6 dB steps + GAIN_DIG 1 dB steps), 47 = 0 dB, 0 = -47 dB
+#define VOLUME_MAX 47
+#define VOLUME_MIN 0
+
+// RXCCAD[5:0] scan threshold, channel valid if RSSI (dBuV) > (CCA_LEVEL - 10)
+#define DEFAULT_CCA_LEVEL 0x04
+#define MAX_CCA_LEVEL 0x3F
 
 
 typedef enum 

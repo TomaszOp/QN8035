@@ -56,6 +56,7 @@
 		Default 000
 		*/
 		void SetGAIN_DIG(uint8_t value);
+		uint8_t GetGAIN_DIG();
 		
 		/*
 		Lower bits of GAIN_ANA[2:0]: Sets volume control gain of analog
@@ -75,6 +76,7 @@
 		Default 111
 		*/
 		void SetGAIN_ANA(uint8_t value);
+		uint8_t GetGAIN_ANA();
 		
 		
 		private: 
